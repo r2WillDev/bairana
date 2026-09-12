@@ -1,0 +1,26 @@
+# .NET build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# VS Code local settings
+.vscode/
+
+# Environment and local secrets
+.env
+.env.*
+secrets.json
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
