@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Bairana.Web/Bairana.Web.csproj" />
+  <Project Path="tests/Bairana.Tests/Bairana.Tests.csproj" />
+</Solution>
