@@ -1,0 +1,31 @@
+@if (falhou)
+{
+    <div class="business-image image-fallback" role="img" aria-label="Imagem ilustrativa indisponível">
+        <span aria-hidden="true">⌂</span>
+        <span>Imagem indisponível</span>
+    </div>
+}
+else
+{
+    <img class="business-image" src="@Caminho.TrimStart('/')" alt="@($"Ilustração de {Nome}")"
+         width="460" height="220" loading="@(Prioridade ? "eager" : "lazy")" decoding="async" @onerror="MarcarFalha" />
+}
+
+@code {
+    [Parameter, EditorRequired] public string Caminho { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Nome { get; set; } = string.Empty;
+    [Parameter] public bool Prioridade { get; set; }
+    private string? anterior;
+    private bool falhou;
+
+    protected override void OnParametersSet()
+    {
+        if (anterior != Caminho)
+        {
+            anterior = Caminho;
+            falhou = !EmpreendedorValidator.ImagemValida(Caminho);
+        }
+    }
+
+    private void MarcarFalha() => falhou = true;
+}

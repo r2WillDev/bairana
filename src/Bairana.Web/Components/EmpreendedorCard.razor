@@ -1,0 +1,18 @@
+<article class="business-card">
+    <ImagemNegocio Caminho="@Negocio.Imagem" Nome="@Negocio.Nome" />
+    <div class="card-content">
+        <span class="category-label">@Categorias.Nome(Negocio.Categoria)</span>
+        <h3><a href="@($"negocio/{Negocio.Slug}")">@Negocio.Nome</a></h3>
+        <p class="business-description">@Negocio.Descricao</p>
+        <InformacoesNegocio Negocio="Negocio" />
+        <div class="card-actions">
+            <a class="detail-link" href="@($"negocio/{Negocio.Slug}")" aria-label="@($"Ver detalhes de {Negocio.Nome}")">
+                Ver detalhes <span aria-hidden="true">→</span>
+            </a>
+        </div>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public Empreendedor Negocio { get; set; } = default!;
+}

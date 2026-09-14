@@ -1,0 +1,51 @@
+@using System.Text.Json
+@inject EmpreendedorDataService Dados
+
+@if (carregando)
+{
+    <div class="state-panel" role="status">
+        <span class="state-symbol" aria-hidden="true">↻</span>
+        <h2>Carregando o guia…</h2>
+        <p>Buscando os negócios para você explorar.</p>
+    </div>
+}
+else if (erro)
+{
+    <div class="state-panel" role="alert">
+        <span class="state-symbol" aria-hidden="true">!</span>
+        <h2>Não foi possível carregar o guia.</h2>
+        <p>Tente novamente em instantes.</p>
+        <button class="button button-primary" @onclick="CarregarAsync">Tentar novamente</button>
+    </div>
+}
+else
+{
+    @ChildContent(registros)
+}
+
+@code {
+    [Parameter, EditorRequired] public RenderFragment<IReadOnlyList<Empreendedor>> ChildContent { get; set; } = default!;
+    private IReadOnlyList<Empreendedor> registros = [];
+    private bool carregando = true;
+    private bool erro;
+
+    protected override Task OnInitializedAsync() => CarregarAsync();
+
+    private async Task CarregarAsync()
+    {
+        carregando = true;
+        erro = false;
+        try
+        {
+            registros = await Dados.CarregarAsync();
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidDataException or OperationCanceledException)
+        {
+            erro = true;
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+}

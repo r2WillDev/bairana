@@ -1,0 +1,16 @@
+@if (LinksExternos.Whatsapp(Negocio.Whatsapp) is string whatsapp)
+{
+    <a class="button button-primary" href="@whatsapp" target="_blank" rel="noopener noreferrer">
+        Conversar no WhatsApp <span aria-hidden="true">↗</span><span class="visually-hidden"> (abre em nova aba)</span>
+    </a>
+}
+@if (LinksExternos.Instagram(Negocio.Instagram) is string instagram)
+{
+    <a class="button button-secondary" href="@instagram" target="_blank" rel="noopener noreferrer">
+        Ver Instagram <span aria-hidden="true">↗</span><span class="visually-hidden"> (abre em nova aba)</span>
+    </a>
+}
+
+@code {
+    [Parameter, EditorRequired] public Empreendedor Negocio { get; set; } = default!;
+}
