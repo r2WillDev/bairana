@@ -1,17 +1,17 @@
 @page "/negocio/{Slug}"
 @inject EmpreendedorDataService Dados
 
-<a class="back-link" href=""><span aria-hidden="true">←</span> Voltar ao guia</a>
+<a class="back-link" href=""><Icone Nome="back" />Voltar ao guia</a>
 <GuiaDados Context="registros">
     @{ var negocio = registros.FirstOrDefault(e => e.Slug == Slug); }
     @if (negocio is null)
     {
         <PageTitle>Negócio não encontrado | BAIRANA</PageTitle>
         <section class="state-panel">
-            <span class="state-symbol" aria-hidden="true">⌂</span>
+            <div class="state-illustration"><Icone Nome="store" /></div>
             <h1>Negócio não encontrado.</h1>
-            <p>Este negócio não está disponível no guia.</p>
-            <a class="button button-primary" href="">Explorar negócios</a>
+            <p>Este negócio não está disponível no guia. Explore a vitrine para encontrar outras opções.</p>
+            <a class="button button-primary" href="">Explorar negócios<Icone Nome="arrow" /></a>
         </section>
     }
     else
@@ -20,28 +20,50 @@
         <article class="profile">
             <div class="profile-visual">
                 <ImagemNegocio @key="negocio.Slug" Caminho="@negocio.Imagem" Nome="@negocio.Nome" Prioridade="true" />
+                <span class="category-overlay"><Icone Nome="@negocio.Categoria" />@Categorias.Nome(negocio.Categoria)</span>
                 @if (Dados.Demonstracao)
                 {
-                    <p>Ilustração e negócio fictícios para demonstração.</p>
+                    <span class="image-status"><span class="status-dot"></span>Negócio demonstrativo</span>
                 }
             </div>
-            <div class="profile-content">
-                <span class="category-label">@Categorias.Nome(negocio.Categoria)</span>
-                <h1>@negocio.Nome</h1>
+            <section class="profile-content surface-card" aria-labelledby="nome-negocio">
+                <div class="profile-title"><h1 id="nome-negocio">@negocio.Nome</h1><span class="profile-symbol" title="Informações do negócio"><Icone Nome="info" /></span></div>
+                <p class="profile-category">@Categorias.Nome(negocio.Categoria)</p>
+                <div class="profile-context"><span class="profile-context-icon"><Icone Nome="store" /></span><div>Vitrine do condomínio<span><span class="status-dot"></span>@(Dados.Demonstracao ? "Demonstração · dados fictícios" : "Produtos e serviços de moradores")</span></div></div>
                 <p class="profile-description">@negocio.Descricao</p>
-                <InformacoesNegocio Negocio="negocio" />
-                <div class="profile-contact">
-                    @if (Dados.Demonstracao)
-                    {
-                        <p class="contact-notice"><strong>Você está explorando uma demonstração.</strong><br />O contato com este negócio está desativado.</p>
-                    }
-                    else
-                    {
-                        <ContatosNegocio Negocio="negocio" />
-                        <p class="contact-hint">Combine valores e atendimento diretamente com o empreendedor.</p>
-                    }
+            </section>
+
+            @if (negocio.Tags.Count > 0)
+            {
+                <section class="specialties" aria-labelledby="especialidades-titulo">
+                    <div class="section-heading"><h2 id="especialidades-titulo"><Icone Nome="star" />Especialidades</h2><span>Sobre este negócio</span></div>
+                    <div class="specialty-scroll">
+                        @foreach (var tag in negocio.Tags.Take(3))
+                        {
+                            <article class="specialty-card">
+                                <ImagemNegocio Caminho="@negocio.Imagem" Nome="@negocio.Nome" />
+                                <div><h3>@tag</h3><p>@Categorias.Nome(negocio.Categoria)</p><span class="neutral-badge">Palavra-chave do negócio</span></div>
+                            </article>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(negocio.Horario) || negocio.Entrega == true || negocio.PrecoInicial.HasValue || LinksExternos.Instagram(negocio.Instagram) is not null)
+            {
+                <section class="business-details surface-card" aria-labelledby="informacoes-titulo">
+                    <h2 id="informacoes-titulo"><Icone Nome="info" />Informações do negócio</h2>
+                    <InformacoesNegocio Negocio="negocio" Detalhado="true" />
+                    <ContatosNegocio Negocio="negocio" ExibirWhatsapp="false" />
+                </section>
+            }
+            <aside class="profile-note"><span class="note-icon"><Icone Nome="shield" /></span><p>@(Dados.Demonstracao ? "Demonstração do guia. Todos os negócios e imagens são fictícios." : "Descubra os talentos da comunidade. Combine diretamente com o empreendedor.")</p></aside>
+            <p class="updated-date">Informações conferidas em <time datetime="@negocio.AtualizadoEm.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@negocio.AtualizadoEm.ToString("dd/MM/yyyy", CultureInfo.GetCultureInfo("pt-BR"))</time>.</p>
+            <div class="contact-dock">
+                <div class="contact-dock-inner">
+                    <ContatosNegocio Negocio="negocio" ExibirInstagram="false" MostrarDemonstracao="@Dados.Demonstracao" />
+                    <p>@(Dados.Demonstracao ? "Contato desativado nesta demonstração. Nenhum telefone é utilizado." : "Você será direcionado ao WhatsApp. Combine valores e atendimento diretamente.")</p>
                 </div>
-                <p class="updated-date">Informações conferidas em <time datetime="@negocio.AtualizadoEm.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@negocio.AtualizadoEm.ToString("dd/MM/yyyy", CultureInfo.GetCultureInfo("pt-BR"))</time>.</p>
             </div>
         </article>
     }

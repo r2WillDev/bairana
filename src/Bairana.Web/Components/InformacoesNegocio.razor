@@ -1,21 +1,40 @@
 @if (!string.IsNullOrWhiteSpace(Negocio.Horario) || Negocio.Entrega == true || Negocio.PrecoInicial.HasValue)
 {
-    <ul class="business-info" aria-label="Informações do negócio">
+    <ul class="business-info @(Detalhado ? "info-detailed" : "info-chips")" aria-label="Informações do negócio">
         @if (!string.IsNullOrWhiteSpace(Negocio.Horario))
         {
-            <li><span aria-hidden="true">◷</span><span><span class="visually-hidden">Horário declarado: </span>@Negocio.Horario</span></li>
+            <li><span class="info-icon"><Icone Nome="clock" /></span><span>
+                @if (Detalhado) { <span class="info-label">Horários de atendimento</span> }
+                <span class="visually-hidden">Horário declarado: </span>@Negocio.Horario
+            </span></li>
         }
         @if (Negocio.Entrega == true)
         {
-            <li><span aria-hidden="true">⌂</span><span>Entrega no condomínio</span></li>
+            <li><span class="info-icon icon-delivery"><Icone Nome="truck" /></span><span>
+                @if (Detalhado) { <span class="info-label">Entrega</span> }
+                Entrega no condomínio
+            </span></li>
         }
         @if (Negocio.PrecoInicial is decimal preco)
         {
-            <li class="starting-price">A partir de @preco.ToString("C", CultureInfo.GetCultureInfo("pt-BR"))</li>
+            <li class="starting-price"><span class="info-icon"><Icone Nome="@(Detalhado ? "money" : "price")" /></span><span>
+                @if (Detalhado) { <span class="info-label">Preço inicial</span> }
+                A partir de @preco.ToString("C", MoedaBrasileira)
+            </span></li>
         }
     </ul>
 }
 
 @code {
     [Parameter, EditorRequired] public Empreendedor Negocio { get; set; } = default!;
+    [Parameter] public bool Detalhado { get; set; }
+    // A apresentação em reais não depende do subconjunto ICU carregado pelo navegador.
+    private static readonly NumberFormatInfo MoedaBrasileira = new()
+    {
+        CurrencySymbol = "R$",
+        CurrencyDecimalDigits = 2,
+        CurrencyDecimalSeparator = ",",
+        CurrencyGroupSeparator = ".",
+        CurrencyPositivePattern = 2
+    };
 }

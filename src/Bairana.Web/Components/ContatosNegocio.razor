@@ -1,16 +1,27 @@
-@if (LinksExternos.Whatsapp(Negocio.Whatsapp) is string whatsapp)
+@if (ExibirWhatsapp)
 {
-    <a class="button button-primary" href="@whatsapp" target="_blank" rel="noopener noreferrer">
-        Conversar no WhatsApp <span aria-hidden="true">↗</span><span class="visually-hidden"> (abre em nova aba)</span>
-    </a>
+    @if (LinksExternos.Whatsapp(Negocio.Whatsapp) is string whatsapp)
+    {
+        <a class="button button-whatsapp" href="@whatsapp" target="_blank" rel="noopener noreferrer">
+            <Icone Nome="whatsapp" />Falar no WhatsApp<span class="visually-hidden"> (abre em nova aba)</span>
+        </a>
+    }
+    else if (MostrarDemonstracao)
+    {
+        <button class="button button-whatsapp" disabled><Icone Nome="whatsapp" />WhatsApp indisponível na demo</button>
+    }
 }
-@if (LinksExternos.Instagram(Negocio.Instagram) is string instagram)
+@if (ExibirInstagram && LinksExternos.Instagram(Negocio.Instagram) is string instagram)
 {
-    <a class="button button-secondary" href="@instagram" target="_blank" rel="noopener noreferrer">
-        Ver Instagram <span aria-hidden="true">↗</span><span class="visually-hidden"> (abre em nova aba)</span>
+    <a class="instagram-link" href="@instagram" target="_blank" rel="noopener noreferrer">
+        <span class="info-icon"><Icone Nome="instagram" /></span><span><span class="info-label">Instagram do negócio</span>@@@Negocio.Instagram</span>
+        <Icone Nome="external" /><span class="visually-hidden"> (abre em nova aba)</span>
     </a>
 }
 
 @code {
     [Parameter, EditorRequired] public Empreendedor Negocio { get; set; } = default!;
+    [Parameter] public bool ExibirWhatsapp { get; set; } = true;
+    [Parameter] public bool ExibirInstagram { get; set; } = true;
+    [Parameter] public bool MostrarDemonstracao { get; set; }
 }
