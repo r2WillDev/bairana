@@ -1,0 +1,15 @@
+<aside class="entrepreneur-invite @(Expandido ? "invite-expanded" : "")">
+    <span class="invite-icon"><Icone Nome="@(Expandido ? "imoveis" : "store")" /></span>
+    <div>
+        <h2>@(Expandido ? "Você tem um talento para compartilhar?" : "Você também empreende?")</h2>
+        <p>@(Expandido ? "Seu talento pode fazer parte da vitrine do condomínio. A inclusão de negócios não está disponível nesta demonstração." : "Divulgue seus talentos e produtos para todo o condomínio.")</p>
+        @if (Expandido)
+        {
+            <span class="invite-note">Demonstração do guia <Icone Nome="arrow" /></span>
+        }
+    </div>
+</aside>
+
+@code {
+    [Parameter] public bool Expandido { get; set; }
+}
