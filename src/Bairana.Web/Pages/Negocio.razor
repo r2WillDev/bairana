@@ -1,0 +1,52 @@
+@page "/negocio/{Slug}"
+@inject EmpreendedorDataService Dados
+
+<a class="back-link" href=""><span aria-hidden="true">←</span> Voltar ao guia</a>
+<GuiaDados Context="registros">
+    @{ var negocio = registros.FirstOrDefault(e => e.Slug == Slug); }
+    @if (negocio is null)
+    {
+        <PageTitle>Negócio não encontrado | BAIRANA</PageTitle>
+        <section class="state-panel">
+            <span class="state-symbol" aria-hidden="true">⌂</span>
+            <h1>Negócio não encontrado.</h1>
+            <p>Este negócio não está disponível no guia.</p>
+            <a class="button button-primary" href="">Explorar negócios</a>
+        </section>
+    }
+    else
+    {
+        <PageTitle>@negocio.Nome | BAIRANA</PageTitle>
+        <article class="profile">
+            <div class="profile-visual">
+                <ImagemNegocio @key="negocio.Slug" Caminho="@negocio.Imagem" Nome="@negocio.Nome" Prioridade="true" />
+                @if (Dados.Demonstracao)
+                {
+                    <p>Ilustração e negócio fictícios para demonstração.</p>
+                }
+            </div>
+            <div class="profile-content">
+                <span class="category-label">@Categorias.Nome(negocio.Categoria)</span>
+                <h1>@negocio.Nome</h1>
+                <p class="profile-description">@negocio.Descricao</p>
+                <InformacoesNegocio Negocio="negocio" />
+                <div class="profile-contact">
+                    @if (Dados.Demonstracao)
+                    {
+                        <p class="contact-notice"><strong>Você está explorando uma demonstração.</strong><br />O contato com este negócio está desativado.</p>
+                    }
+                    else
+                    {
+                        <ContatosNegocio Negocio="negocio" />
+                        <p class="contact-hint">Combine valores e atendimento diretamente com o empreendedor.</p>
+                    }
+                </div>
+                <p class="updated-date">Informações conferidas em <time datetime="@negocio.AtualizadoEm.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@negocio.AtualizadoEm.ToString("dd/MM/yyyy", CultureInfo.GetCultureInfo("pt-BR"))</time>.</p>
+            </div>
+        </article>
+    }
+</GuiaDados>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+}
