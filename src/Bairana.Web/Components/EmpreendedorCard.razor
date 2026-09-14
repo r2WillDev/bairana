@@ -1,13 +1,20 @@
 <article class="business-card">
-    <ImagemNegocio Caminho="@Negocio.Imagem" Nome="@Negocio.Nome" />
+    <div class="card-visual">
+        <ImagemNegocio Caminho="@Negocio.Imagem" Nome="@Negocio.Nome" />
+        <span class="category-overlay">@Categorias.Nome(Negocio.Categoria)</span>
+        @if (Negocio.Entrega == true)
+        {
+            <span class="image-status"><span class="status-dot"></span> Entrega no condomínio</span>
+        }
+    </div>
     <div class="card-content">
-        <span class="category-label">@Categorias.Nome(Negocio.Categoria)</span>
         <h3><a href="@($"negocio/{Negocio.Slug}")">@Negocio.Nome</a></h3>
         <p class="business-description">@Negocio.Descricao</p>
         <InformacoesNegocio Negocio="Negocio" />
         <div class="card-actions">
-            <a class="detail-link" href="@($"negocio/{Negocio.Slug}")" aria-label="@($"Ver detalhes de {Negocio.Nome}")">
-                Ver detalhes <span aria-hidden="true">→</span>
+            <span class="card-context"><Icone Nome="info" /> Negócio fictício</span>
+            <a class="detail-link button button-primary" href="@($"negocio/{Negocio.Slug}")" aria-label="@($"Ver detalhes de {Negocio.Nome}")">
+                Ver detalhes <Icone Nome="arrow" />
             </a>
         </div>
     </div>

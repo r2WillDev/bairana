@@ -1,79 +1,117 @@
 @page "/"
+@inject NavigationManager Navigation
 
-<PageTitle>BAIRANA | O talento mora perto</PageTitle>
-
-<section class="intro" aria-labelledby="guia-titulo">
-    <p class="eyebrow">GUIA DE EMPREENDEDORES DO CONDOMÍNIO</p>
-    <h1 id="guia-titulo">Encontre o que precisa.<br /><span>Valorize quem mora perto.</span></h1>
-    <p class="intro-description">Produtos e serviços oferecidos por moradores.<br class="desktop-break" /> Descubra um negócio, conheça os detalhes e combine diretamente.</p>
-</section>
-
-<section class="discovery" aria-label="Pesquisar e filtrar negócios">
-    <label for="busca">O que você está procurando?</label>
-    <div class="search-field">
-        <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><circle cx="10" cy="10" r="6.5" /><path d="m15 15 6 6" /></svg>
-        <input id="busca" type="search" placeholder="Experimente crepe, manicure, manutenção…" autocomplete="off"
-               @bind="busca" @bind:event="oninput" />
-    </div>
-    <div class="category-filters" role="group" aria-label="Categorias">
-        <button class="category-chip" aria-pressed="@(categoria is null ? "true" : "false")" @onclick="SelecionarTodas">Todas</button>
-        @foreach (var item in Categorias.Todas)
-        {
-            <button class="category-chip" aria-pressed="@(categoria == item.Id ? "true" : "false")"
-                    @onclick="() => categoria = item.Id">@item.Nome</button>
-        }
-    </div>
-</section>
+<PageTitle>BAIRANA | Vitrine comunitária</PageTitle>
 
 <GuiaDados Context="registros">
     @if (registros.Count == 0)
     {
-        <section class="state-panel" role="status">
-            <span class="state-symbol" aria-hidden="true">⌂</span>
-            <h2>O guia ainda não tem negócios.</h2>
-            <p>Volte em breve para conhecer os empreendedores.</p>
+        <section class="state-panel empty-state">
+            <div class="state-illustration"><Icone Nome="store" /></div>
+            <h1>O guia ainda não tem negócios.</h1>
+            <p>Em breve, este espaço vai reunir os produtos e serviços dos moradores. Volte para conhecer as novidades.</p>
+            <span class="neutral-badge">Vitrine em preparação</span>
         </section>
+        <ConviteEmpreendedor />
     }
     else
     {
         var resultados = PesquisaEmpreendedores.Filtrar(registros, busca, categoria);
-        <section class="results" aria-labelledby="resultados-titulo">
-            <div class="results-heading">
-                <div>
-                    <h2 id="resultados-titulo">@(categoria is null ? "Explore os negócios" : Categorias.Nome(categoria))</h2>
-                    <p role="status" aria-live="polite">@resultados.Count @(resultados.Count == 1 ? "negócio encontrado" : "negócios encontrados")</p>
-                </div>
-                <span class="sort-caption">Ordem alfabética <span aria-hidden="true">A–Z</span></span>
+        var semResultados = resultados.Count == 0;
+        @if (!semResultados)
+        {
+            <section class="intro" aria-labelledby="guia-titulo">
+                <span class="hero-badge"><span class="status-dot"></span> Economia Hiperlocal</span>
+                <h1 id="guia-titulo">Encontre o que precisa.<br /><span>Valorize quem mora perto.</span></h1>
+                <p>Produtos e serviços oferecidos por moradores do condomínio. Descubra e combine diretamente.</p>
+            </section>
+        }
+
+        <section id="categorias" class="discovery @(semResultados ? "discovery-no-results" : "")" aria-label="Pesquisar e filtrar negócios" tabindex="-1">
+            <label class="visually-hidden" for="busca">O que você está procurando?</label>
+            <div class="search-field">
+                <Icone Nome="search" />
+                <input id="busca" type="search" placeholder="Buscar por nome, produto ou serviço…" autocomplete="off" @bind="busca" @bind:event="oninput" />
+                @if (!string.IsNullOrEmpty(busca))
+                {
+                    <button class="clear-search icon-button" aria-label="Limpar pesquisa" @onclick="() => busca = string.Empty"><Icone Nome="close" /></button>
+                }
             </div>
-            @if (resultados.Count == 0)
+            @if (semResultados)
             {
-                <div class="state-panel">
-                    <span class="state-symbol" aria-hidden="true">⌕</span>
-                    <h3>Nenhum negócio encontrado.</h3>
-                    <p>Experimente outra palavra ou explore todas as categorias.</p>
-                    <button class="button button-primary" @onclick="LimparFiltros">Limpar filtros</button>
+                <div class="active-filters">
+                    <div class="active-filter-label">
+                        <span>@(categoria is null ? "Busca ativa" : "Filtro ativo:")</span>
+                        @if (categoria is not null)
+                        {
+                            <button class="active-category" @onclick="SelecionarTodas" aria-label="@($"Remover filtro {Categorias.Nome(categoria)}")">@Categorias.Nome(categoria)<Icone Nome="close" /></button>
+                        }
+                    </div>
+                    <p class="zero-count" role="status"><span class="status-dot"></span> 0 resultados encontrados</p>
                 </div>
             }
             else
             {
+                <div class="category-filters" role="group" aria-label="Categorias">
+                    <button class="category-chip" aria-pressed="@(categoria is null ? "true" : "false")" @onclick="SelecionarTodas">Todas <span class="category-count">@registros.Count</span></button>
+                    @foreach (var item in Categorias.Todas)
+                    {
+                        <button class="category-chip" aria-pressed="@(categoria == item.Id ? "true" : "false")" @onclick="() => SelecionarCategoria(item.Id)"><Icone Nome="@item.Id" />@item.Nome</button>
+                    }
+                </div>
+            }
+        </section>
+
+        @if (semResultados)
+        {
+            <section class="state-panel no-results">
+                <div class="state-illustration"><Icone Nome="search" /><Icone Nome="heart" Class="search-heart" /></div>
+                <h1>Nenhum negócio encontrado</h1>
+                <p>Não encontramos nenhum negócio com os filtros selecionados. Tente buscar por outros termos ou explore todas as categorias.</p>
+                <button class="button button-primary clear-filters" @onclick="LimparFiltros"><Icone Nome="refresh" />Limpar filtros e ver todos</button>
+            </section>
+            <ConviteEmpreendedor Expandido="true" />
+            <section class="search-suggestions" aria-labelledby="sugestoes-titulo">
+                <div class="suggestions-heading"><h2 id="sugestoes-titulo">Explore outras buscas</h2><span>no condomínio</span></div>
+                <div class="suggestion-chips">
+                    <button @onclick='() => SugerirBusca("doces")'><Icone Nome="doces" />Doces caseiros</button>
+                    <button @onclick='() => SugerirBusca("manutencao")'><Icone Nome="servicos" />Manutenção e reparos</button>
+                    <button @onclick='() => SugerirBusca("aulas")'><Icone Nome="aulas" />Aulas particulares</button>
+                    <button @onclick='() => SugerirBusca("produtos")'><Icone Nome="produtos" />Produtos</button>
+                </div>
+            </section>
+        }
+        else
+        {
+            <section class="results" aria-label="Negócios encontrados">
+                <h2 class="visually-hidden">Explore os negócios</h2>
+                <div class="results-summary">
+                    <p role="status" aria-live="polite"><span class="status-dot"></span> @resultados.Count @(resultados.Count == 1 ? "negócio encontrado" : "negócios encontrados")</p>
+                    <span><Icone Nome="sort" /> Ordem alfabética (A–Z)</span>
+                </div>
                 <div class="business-grid">
                     @foreach (var negocio in resultados)
                     {
                         <EmpreendedorCard @key="negocio.Id" Negocio="negocio" />
                     }
                 </div>
-            }
-        </section>
+            </section>
+            <ConviteEmpreendedor />
+        }
     }
 </GuiaDados>
 
 @code {
     private string busca = string.Empty;
     private string? categoria;
-    private void SelecionarTodas() => categoria = null;
-    private void LimparFiltros()
+    [SupplyParameterFromQuery(Name = "categoria")] public string? CategoriaConsulta { get; set; }
+    protected override void OnParametersSet() => categoria = Categorias.Existe(CategoriaConsulta) ? CategoriaConsulta : null;
+    private void SelecionarCategoria(string? id)
     {
-        busca = string.Empty;
-        categoria = null;
+        categoria = id;
+        Navigation.NavigateTo(Navigation.GetUriWithQueryParameter("categoria", id));
     }
+    private void SelecionarTodas() => SelecionarCategoria(null);
+    private void LimparFiltros() { busca = string.Empty; SelecionarTodas(); }
+    private void SugerirBusca(string termo) { busca = termo; SelecionarTodas(); }
 }

@@ -3,20 +3,32 @@
 
 @if (carregando)
 {
-    <div class="state-panel" role="status">
-        <span class="state-symbol" aria-hidden="true">↻</span>
-        <h2>Carregando o guia…</h2>
-        <p>Buscando os negócios para você explorar.</p>
-    </div>
+    <section class="loading-state" role="status" aria-busy="true">
+        <h1 class="visually-hidden">Carregando o guia…</h1>
+        <div class="loading-message"><span class="loading-spinner" aria-hidden="true"></span>Buscando os negócios dos seus vizinhos…</div>
+        <div class="skeleton-content" aria-hidden="true">
+            <div class="skeleton-categories"><span></span><span></span><span></span><span></span></div>
+            <div class="skeleton-grid">
+                @for (var i = 0; i < 2; i++)
+                {
+                    <div class="skeleton-card">
+                        <div class="skeleton-card-heading"><span class="skeleton-thumb"></span><div><span class="skeleton-line"></span><span class="skeleton-line short"></span><div class="skeleton-tags"><span></span><span></span></div></div></div>
+                        <span class="skeleton-line"></span><span class="skeleton-line medium"></span>
+                        <div class="skeleton-footer"><span class="skeleton-line short"></span><span class="skeleton-button"></span></div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
 }
 else if (erro)
 {
-    <div class="state-panel" role="alert">
-        <span class="state-symbol" aria-hidden="true">!</span>
-        <h2>Não foi possível carregar o guia.</h2>
-        <p>Tente novamente em instantes.</p>
-        <button class="button button-primary" @onclick="CarregarAsync">Tentar novamente</button>
-    </div>
+    <section class="state-panel error-state" role="alert">
+        <div class="state-illustration"><Icone Nome="wifi-off" /></div>
+        <h1>Não foi possível carregar o guia.</h1>
+        <p>Não conseguimos buscar os negócios. Verifique sua conexão e tente novamente em instantes.</p>
+        <button class="button button-primary" @onclick="CarregarAsync"><Icone Nome="refresh" />Tentar novamente</button>
+    </section>
 }
 else
 {
