@@ -110,7 +110,9 @@ Após iniciar a aplicação, abra no navegador a URL exibida pelo terminal.
 
 A fundação com .NET 10, Blazor WebAssembly Standalone e xUnit já está estabelecida e validada localmente, incluindo restore, build, testes e execução da aplicação base.
 
-As funcionalidades do MVP ainda serão implementadas incrementalmente.
+O MVP local inclui busca, categorias, cards, perfis e estados de carregamento/erro. Os oito negócios de `src/Bairana.Web/wwwroot/data/empreendedores.json` são fictícios e não possuem contatos acionáveis.
+
+A aplicação registra `EmpreendedorDataService` com `demonstracao: true` em `Program.cs`. Esse modo rejeita WhatsApp e Instagram preenchidos. A validação de piloto (`demonstracao: false`) exige WhatsApp no formato internacional de 8 a 15 dígitos ASCII, sem `+` ou pontuação; Instagram aceita somente username, sem `@` ou URL. Os testes de piloto usam entradas sintáticas isoladas, nunca publicadas na demo.
 
 ## Dados e privacidade
 
