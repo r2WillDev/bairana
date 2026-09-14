@@ -1,6 +1,79 @@
 @page "/"
 
-<PageTitle>BAIRANA</PageTitle>
+<PageTitle>BAIRANA | O talento mora perto</PageTitle>
 
-<h1>BAIRANA</h1>
-<p>Em desenvolvimento.</p>
+<section class="intro" aria-labelledby="guia-titulo">
+    <p class="eyebrow">GUIA DE EMPREENDEDORES DO CONDOMÍNIO</p>
+    <h1 id="guia-titulo">Encontre o que precisa.<br /><span>Valorize quem mora perto.</span></h1>
+    <p class="intro-description">Produtos e serviços oferecidos por moradores.<br class="desktop-break" /> Descubra um negócio, conheça os detalhes e combine diretamente.</p>
+</section>
+
+<section class="discovery" aria-label="Pesquisar e filtrar negócios">
+    <label for="busca">O que você está procurando?</label>
+    <div class="search-field">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><circle cx="10" cy="10" r="6.5" /><path d="m15 15 6 6" /></svg>
+        <input id="busca" type="search" placeholder="Experimente crepe, manicure, manutenção…" autocomplete="off"
+               @bind="busca" @bind:event="oninput" />
+    </div>
+    <div class="category-filters" role="group" aria-label="Categorias">
+        <button class="category-chip" aria-pressed="@(categoria is null ? "true" : "false")" @onclick="SelecionarTodas">Todas</button>
+        @foreach (var item in Categorias.Todas)
+        {
+            <button class="category-chip" aria-pressed="@(categoria == item.Id ? "true" : "false")"
+                    @onclick="() => categoria = item.Id">@item.Nome</button>
+        }
+    </div>
+</section>
+
+<GuiaDados Context="registros">
+    @if (registros.Count == 0)
+    {
+        <section class="state-panel" role="status">
+            <span class="state-symbol" aria-hidden="true">⌂</span>
+            <h2>O guia ainda não tem negócios.</h2>
+            <p>Volte em breve para conhecer os empreendedores.</p>
+        </section>
+    }
+    else
+    {
+        var resultados = PesquisaEmpreendedores.Filtrar(registros, busca, categoria);
+        <section class="results" aria-labelledby="resultados-titulo">
+            <div class="results-heading">
+                <div>
+                    <h2 id="resultados-titulo">@(categoria is null ? "Explore os negócios" : Categorias.Nome(categoria))</h2>
+                    <p role="status" aria-live="polite">@resultados.Count @(resultados.Count == 1 ? "negócio encontrado" : "negócios encontrados")</p>
+                </div>
+                <span class="sort-caption">Ordem alfabética <span aria-hidden="true">A–Z</span></span>
+            </div>
+            @if (resultados.Count == 0)
+            {
+                <div class="state-panel">
+                    <span class="state-symbol" aria-hidden="true">⌕</span>
+                    <h3>Nenhum negócio encontrado.</h3>
+                    <p>Experimente outra palavra ou explore todas as categorias.</p>
+                    <button class="button button-primary" @onclick="LimparFiltros">Limpar filtros</button>
+                </div>
+            }
+            else
+            {
+                <div class="business-grid">
+                    @foreach (var negocio in resultados)
+                    {
+                        <EmpreendedorCard @key="negocio.Id" Negocio="negocio" />
+                    }
+                </div>
+            }
+        </section>
+    }
+</GuiaDados>
+
+@code {
+    private string busca = string.Empty;
+    private string? categoria;
+    private void SelecionarTodas() => categoria = null;
+    private void LimparFiltros()
+    {
+        busca = string.Empty;
+        categoria = null;
+    }
+}
