@@ -1,0 +1,135 @@
+[
+  {
+    "id": "emp-001",
+    "slug": "crepe-da-carol",
+    "nome": "Crepe da Carol",
+    "categoria": "comida",
+    "tags": [
+      "crepe",
+      "lanche",
+      "doce",
+      "salgado"
+    ],
+    "descricao": "Crepes doces e salgados, preparados sob encomenda. Um lanche para deixar o fim de tarde mais gostoso. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/comida.svg",
+    "atualizadoEm": "2026-09-14",
+    "horario": "Terça a domingo, das 18h às 23h",
+    "entrega": true,
+    "precoInicial": 12
+  },
+  {
+    "id": "emp-002",
+    "slug": "morangos-da-ju",
+    "nome": "Morangos da Ju",
+    "categoria": "doces",
+    "tags": [
+      "morango",
+      "chocolate",
+      "sobremesa"
+    ],
+    "descricao": "Morangos cobertos com chocolate e doces para presentear ou compartilhar. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/doces.svg",
+    "atualizadoEm": "2026-09-14",
+    "horario": "Encomendas de segunda a sexta",
+    "entrega": true,
+    "precoInicial": 15
+  },
+  {
+    "id": "emp-003",
+    "slug": "joao-corretor",
+    "nome": "João Corretor",
+    "categoria": "imoveis",
+    "tags": [
+      "corretagem",
+      "aluguel",
+      "compra"
+    ],
+    "descricao": "Orientação para quem procura comprar, vender ou alugar um imóvel. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/imoveis.svg",
+    "atualizadoEm": "2026-09-14"
+  },
+  {
+    "id": "emp-004",
+    "slug": "ana-manicure",
+    "nome": "Ana Manicure",
+    "categoria": "beleza",
+    "tags": [
+      "unhas",
+      "manicure",
+      "pedicure"
+    ],
+    "descricao": "Cuidado com as unhas, esmaltação e atendimento com hora combinada. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/beleza.svg",
+    "atualizadoEm": "2026-09-14",
+    "horario": "Segunda a sábado, das 9h às 18h",
+    "entrega": false,
+    "precoInicial": 30
+  },
+  {
+    "id": "emp-005",
+    "slug": "carlos-manutencao",
+    "nome": "Carlos Manutenção",
+    "categoria": "servicos",
+    "tags": [
+      "reparos",
+      "eletricista",
+      "instalação"
+    ],
+    "descricao": "Manutenção e pequenos reparos para facilitar a rotina da casa. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/servicos.svg",
+    "atualizadoEm": "2026-09-14",
+    "horario": "Segunda a sexta, das 8h às 17h"
+  },
+  {
+    "id": "emp-006",
+    "slug": "aulas-da-lia",
+    "nome": "Aulas da Lia",
+    "categoria": "aulas",
+    "tags": [
+      "reforço",
+      "matemática",
+      "estudos"
+    ],
+    "descricao": "Reforço de matemática e apoio nos estudos, com explicações no ritmo de cada aluno. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/aulas.svg",
+    "atualizadoEm": "2026-09-14",
+    "precoInicial": 45
+  },
+  {
+    "id": "emp-007",
+    "slug": "atelie-ipe",
+    "nome": "Ateliê Ipê",
+    "categoria": "produtos",
+    "tags": [
+      "artesanato",
+      "presente",
+      "decoração"
+    ],
+    "descricao": "Peças artesanais e pequenos objetos de decoração para dar um toque especial à casa. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/produtos.svg",
+    "atualizadoEm": "2026-09-14",
+    "entrega": true
+  },
+  {
+    "id": "emp-008",
+    "slug": "costuras-da-nina",
+    "nome": "Costuras da Nina",
+    "categoria": "outros",
+    "tags": [
+      "costura",
+      "ajustes",
+      "roupas"
+    ],
+    "descricao": "Barras e pequenos ajustes para suas roupas favoritas ganharem novos dias. Negócio fictício de demonstração.",
+    "whatsapp": "",
+    "imagem": "images/outros.svg",
+    "atualizadoEm": "2026-09-14"
+  }
+]
