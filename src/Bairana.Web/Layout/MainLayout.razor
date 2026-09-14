@@ -1,34 +1,38 @@
 @inherits LayoutComponentBase
-@inject EmpreendedorDataService Dados
+@implements IDisposable
+@inject NavigationManager Navigation
 
 <a class="skip-link" href="#conteudo" @onclick="FocarConteudoAsync" @onclick:preventDefault>Pular para o conteúdo</a>
 <header class="site-header">
     <div class="container header-content">
-        <a class="brand" href="" aria-label="BAIRANA, início do guia">
-            <span class="brand-logo">
-                <img src="favicon.ico" alt="Bairana" width="256" height="113" />
-            </span>
-        </a>
-        <span class="header-caption">O talento mora perto.</span>
+        @if (Detalhe)
+        {
+            <a class="icon-button" href="" aria-label="Voltar para a vitrine"><Icone Nome="back" /></a>
+            <div class="detail-header-title"><span>Detalhe do negócio</span><small><Icone Nome="building" /> Condomínio Jardins</small></div>
+            <button class="icon-button" type="button" disabled aria-label="Compartilhamento indisponível nesta demonstração"><Icone Nome="share" /></button>
+        }
+        else
+        {
+            <a class="brand" href="" aria-label="BAIRANA, início do guia"><Marca /><span class="brand-subtitle">Vitrine</span></a>
+            <span class="condominium-chip"><Icone Nome="building" /> Condomínio Jardins</span>
+            <button class="icon-button header-notifications" type="button" disabled aria-label="Notificações indisponíveis nesta demonstração"><Icone Nome="bell" /></button>
+        }
+        <span class="header-avatar" aria-hidden="true"><Marca /></span>
     </div>
 </header>
-@if (Dados.Demonstracao)
-{
-    <aside class="demo-notice">
-        <div class="container"><strong>Demonstração</strong><span>Negócios fictícios. Contatos desativados.</span></div>
-    </aside>
-}
-<main @ref="conteudo" id="conteudo" class="container main-content" tabindex="-1">
+<main @ref="conteudo" id="conteudo" class="container main-content @(Detalhe ? "detail-main" : "")" tabindex="-1">
     @Body
 </main>
-<footer class="site-footer">
-    <div class="container footer-content">
-        <span class="footer-brand">BAIRANA <span>·</span> Feito para encontrar por perto.</span>
-        <p>Um guia de produtos e serviços de moradores.<br />Negociação, pagamento e entrega acontecem fora da plataforma.</p>
-    </div>
-</footer>
+@if (!Detalhe)
+{
+    <NavegacaoInferior />
+}
 
 @code {
     private ElementReference conteudo;
+    private bool Detalhe => Navigation.ToBaseRelativePath(Navigation.Uri).StartsWith("negocio/", StringComparison.Ordinal);
+    protected override void OnInitialized() => Navigation.LocationChanged += AtualizarLayout;
+    private void AtualizarLayout(object? sender, LocationChangedEventArgs args) => _ = InvokeAsync(StateHasChanged);
     private async Task FocarConteudoAsync() => await conteudo.FocusAsync();
+    public void Dispose() => Navigation.LocationChanged -= AtualizarLayout;
 }
