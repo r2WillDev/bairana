@@ -83,4 +83,41 @@ public class ComponentesTests
         Assert.DoesNotContain("<img", html);
         Assert.DoesNotContain("javascript:", html);
     }
+
+    [Fact]
+    public async Task WhatsappDaDemoEVisualMasNaoAcionavel()
+    {
+        var html = await RenderAsync<ContatosNegocio>(new()
+        {
+            ["Negocio"] = DadosTeste.Registro(),
+            ["MostrarDemonstracao"] = true,
+            ["ExibirInstagram"] = false
+        });
+        Assert.Contains("<button", html);
+        Assert.Contains("disabled", html);
+        Assert.DoesNotContain("href=", html);
+        Assert.DoesNotContain("wa.me", html);
+    }
+
+    [Fact]
+    public async Task PrecoBrasileiroTemSimboloSeparadoresEAgrupamento()
+    {
+        var html = WebUtility.HtmlDecode(await RenderAsync<InformacoesNegocio>(new()
+        {
+            ["Negocio"] = DadosTeste.Registro("precoInicial", "1234.56"),
+            ["Detalhado"] = true
+        }));
+        Assert.Contains("R$ 1.234,56", html);
+    }
+
+    [Fact]
+    public async Task CardUsaCategoriaDoContratoSemAfirmarDisponibilidadeOuVerificacao()
+    {
+        var html = WebUtility.HtmlDecode(await RenderAsync<EmpreendedorCard>(new() { ["Negocio"] = DadosTeste.Registro() }));
+        Assert.Contains("Comida", html);
+        Assert.Contains("negocio/negocio-teste", html);
+        Assert.Contains("Negócio fictício", html);
+        Assert.DoesNotContain("Disponível agora", html);
+        Assert.DoesNotContain("verificado", html);
+    }
 }
