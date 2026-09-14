@@ -1,5 +1,34 @@
 @inherits LayoutComponentBase
+@inject EmpreendedorDataService Dados
 
-<main>
+<a class="skip-link" href="#conteudo" @onclick="FocarConteudoAsync" @onclick:preventDefault>Pular para o conteúdo</a>
+<header class="site-header">
+    <div class="container header-content">
+        <a class="brand" href="" aria-label="BAIRANA, início do guia">
+            <span class="brand-logo">
+                <img src="favicon.ico" alt="Bairana" width="256" height="113" />
+            </span>
+        </a>
+        <span class="header-caption">O talento mora perto.</span>
+    </div>
+</header>
+@if (Dados.Demonstracao)
+{
+    <aside class="demo-notice">
+        <div class="container"><strong>Demonstração</strong><span>Negócios fictícios. Contatos desativados.</span></div>
+    </aside>
+}
+<main @ref="conteudo" id="conteudo" class="container main-content" tabindex="-1">
     @Body
 </main>
+<footer class="site-footer">
+    <div class="container footer-content">
+        <span class="footer-brand">BAIRANA <span>·</span> Feito para encontrar por perto.</span>
+        <p>Um guia de produtos e serviços de moradores.<br />Negociação, pagamento e entrega acontecem fora da plataforma.</p>
+    </div>
+</footer>
+
+@code {
+    private ElementReference conteudo;
+    private async Task FocarConteudoAsync() => await conteudo.FocusAsync();
+}
