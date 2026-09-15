@@ -1,0 +1,96 @@
+@page "/categorias"
+
+<PageTitle>Categorias | BAIRANA</PageTitle>
+
+<GuiaDados Context="registros">
+    <div class="categories-page">
+        <section class="categories-intro" aria-labelledby="categorias-titulo">
+            <span class="categories-badge"><span class="status-dot"></span>Tudo no seu condomínio</span>
+            <h1 id="categorias-titulo">Explore por categorias</h1>
+            <p>Encontre produtos, serviços e talentos dos seus vizinhos.</p>
+        </section>
+
+        <label class="visually-hidden" for="buscar-categoria">Buscar categoria ou serviço</label>
+        <div class="search-field categories-search">
+            <Icone Nome="search" />
+            <input id="buscar-categoria" type="search" placeholder="Buscar categoria ou serviço..." autocomplete="off" @bind="busca" @bind:event="oninput" />
+            @if (!string.IsNullOrEmpty(busca))
+            {
+                <button type="button" class="clear-search icon-button" aria-label="Limpar busca de categorias" @onclick="LimparBusca"><Icone Nome="close" /></button>
+            }
+        </div>
+
+        <section class="popular-categories" aria-labelledby="mais-buscadas-titulo">
+            <div class="popular-heading"><h2 id="mais-buscadas-titulo">Mais buscadas</h2><span title="Sugestões de navegação, sem ranking de buscas"><Icone Nome="trend" />Em alta</span></div>
+            <div class="popular-chips">
+                @foreach (var item in Categorias.Todas.Where(c => c.Id is "doces" or "servicos" or "comida" or "aulas").OrderBy(c => OrdemDestaque(c.Id)))
+                {
+                    <a class="popular-chip category-tone-@item.Id" href="@Destino(item.Id)"><Icone Nome="@Apresentacao(item.Id).Icone" />@item.Nome</a>
+                }
+            </div>
+        </section>
+
+        <section class="all-categories" aria-labelledby="todas-categorias-titulo">
+            @{ var visiveis = Categorias.Todas.Where(Corresponde).OrderBy(c => Apresentacao(c.Id).Ordem).ToList(); }
+            <div class="categories-heading">
+                <h2 id="todas-categorias-titulo">Todas as categorias</h2>
+                <span role="status">@(string.IsNullOrWhiteSpace(busca) ? $"{Categorias.Todas.Count} categorias ativas" : $"{visiveis.Count} {(visiveis.Count == 1 ? "categoria encontrada" : "categorias encontradas")}")</span>
+            </div>
+            @if (visiveis.Count == 0)
+            {
+                <div class="category-empty surface-card">
+                    <Icone Nome="search" />
+                    <h3>Nenhuma categoria encontrada</h3>
+                    <p>Tente outro termo ou explore todas as categorias.</p>
+                    <button type="button" class="button button-primary" @onclick="LimparBusca">Limpar busca</button>
+                </div>
+            }
+            else
+            {
+                <div class="categories-grid">
+                    @foreach (var item in visiveis)
+                    {
+                        var visual = Apresentacao(item.Id);
+                        var quantidade = registros.Count(e => e.Categoria == item.Id);
+                        <a @key="item.Id" class="category-tile surface-card category-tone-@item.Id" href="@Destino(item.Id)">
+                            <span class="category-icon"><Icone Nome="@visual.Icone" /></span>
+                            <h3>@item.Nome</h3>
+                            <p>@visual.Descricao</p>
+                            <span class="category-tile-footer"><span>@quantidade @(quantidade == 1 ? "negócio" : "negócios")</span><Icone Nome="arrow" /></span>
+                        </a>
+                    }
+                </div>
+            }
+        </section>
+
+        <aside class="categories-invite surface-card">
+            <span class="category-icon"><Icone Nome="store" /></span>
+            <div><h2>Não encontrou o que procura?</h2><p>Explore todos os negócios disponíveis na vitrine comunitária.</p><a href="">Ver toda a vitrine<Icone Nome="arrow" /></a></div>
+        </aside>
+    </div>
+</GuiaDados>
+
+@code {
+    private string busca = string.Empty;
+    private void LimparBusca() => busca = string.Empty;
+    private static string Destino(string id) => $"?categoria={Uri.EscapeDataString(id)}";
+    private bool Corresponde((string Id, string Nome) categoria)
+    {
+        var termo = PesquisaEmpreendedores.Normalizar(busca);
+        return PesquisaEmpreendedores.Normalizar($"{categoria.Nome} {Apresentacao(categoria.Id).Descricao}").Contains(termo, StringComparison.Ordinal);
+    }
+
+    // A ordem, a descrição e o ícone são apresentação; IDs e nomes vêm do catálogo oficial.
+    private static (int Ordem, string Descricao, string Icone) Apresentacao(string id) => id switch
+    {
+        "comida" => (0, "Refeições, pães e sabores locais", "comida"),
+        "doces" => (1, "Bolos, sobremesas e doces caseiros", "doces"),
+        "servicos" => (2, "Manutenção, reparos e técnicos", "wrench"),
+        "beleza" => (3, "Cabelo, unhas e estética", "scissors"),
+        "aulas" => (4, "Aulas particulares e treinos", "aulas"),
+        "produtos" => (5, "Artesanato, brechó e itens locais", "produtos"),
+        "imoveis" => (6, "Locação e vagas no condomínio", "imoveis"),
+        _ => (7, "Consultorias e serviços diversos", "grid")
+    };
+    private static int OrdemDestaque(string id) => id switch { "doces" => 0, "servicos" => 1, "comida" => 2, _ => 3 };
+}
